@@ -1,0 +1,8 @@
+{
+    "questionCount": 5,
+    "minPlayers": 2,
+    "idealPlayers": 3,
+    "host": "192.168.86.25",
+    "port": "1337",
+    "waitTime": 60
+}

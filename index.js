@@ -3,9 +3,11 @@ const express = require('express')
 const questions = require('./questions');
 const WebSocket = require('ws')
 const fs = require('fs');
-const inquirer = require('inquirer');
 
+const options = require("./options.json");
 const app = express();
+const indexFile = fs.readFileSync("./index.html", "utf-8").replace("@@HOST", options.host).replace("@@PORT", options.port);
+
 const server = http.createServer(app)
 const wss = new WebSocket.Server({ server });
 
@@ -25,9 +27,10 @@ const QUESTION_MISSED = "QUESTION_MISSED";
 const ROUND_INTERSTITIAL = "ROUND_INTERSTITIAL";
 const ROUND_END = "ROUND_END";
 const GAME_OVER = "GAME_OVER";
-const MIN_PLAYERS = 2;
-const IDEAL_PLAYERS = 3;
-const QUESTION_COUNT = 5;
+
+const MIN_PLAYERS = options.minPlayers;
+const IDEAL_PLAYERS = options.idealPlayers;
+const QUESTION_COUNT = options.questionCount;
 
 const game = {
     phase: GAME_WAITING,
@@ -91,7 +94,7 @@ const game = {
             this.questionsLeft--;
             player.round[this.roundNumber - 1]++;
             this.lastAnswer = player.name;
-            this.setPhase(QUESTION_ANSWERED, 5);
+            this.setPhase(QUESTION_ANSWERED, 10);
         } else {
             this.sendIncorrect(ws);
         }
@@ -224,7 +227,7 @@ const game = {
                 if (this.playersJoined()) {
                     this.players.forEach((element) => element.ready = false);
                     this.ready = true;
-                    this.setPhase(GAME_INSTRUCTIONS, 10);
+                    this.setPhase(GAME_INSTRUCTIONS, options.waitTime);
                 } else {
                     // console.log("GAME CANNOT START BECAUSE ALL PLAYERS ARE NOT JOINED.")
                 }
@@ -258,7 +261,7 @@ const game = {
 
                 } else {
                     this.sendPing();
-                    this.setPhase(QUESTION_READY, 5);
+                    this.setPhase(QUESTION_READY, 7);
                 }
 
             } else if (this.phase == QUESTION_READY) {
@@ -267,13 +270,13 @@ const game = {
                     console.log(question);
                     this.lastAnswer = null;
                     this.question = question;
-                    this.setPhase(QUESTION_START, 10);
+                    this.setPhase(QUESTION_START, 20);
                 } else {
                     this.sendPing();
                     // this.debug("GAME CANNOT START BECAUSE ALL PLAYERS ARE NOT READY.")
                 }
             } else if (this.phase == QUESTION_START) {
-                this.setPhase(QUESTION_MISSED, 5);
+                this.setPhase(QUESTION_MISSED, 10);
             } else if (this.phase == QUESTION_ANSWERED) {
 
             } else if (this.phase == QUESTION_MISSED) {
@@ -308,13 +311,15 @@ const game = {
 app.use(express.static('public'))
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.send(indexFile);
+    // res.sendFile(__dirname + '/index.html');
 })
 
 app.get('/reset', function (req, res) {
     fs.rmSync("./save.json");
     game.resetGame();
     game.setPhase(GAME_WAITING);
+    res.send("reset");
 });
 
 wss.on('connection', function (ws) {
@@ -348,8 +353,10 @@ wss.on('connection', function (ws) {
                     game.saveGame();
                 }
             } else if (action == "reportReady") {
-                game.joinPlayer(data.player);
-                game.readyPlayer(data.player);
+                if (data.player != null) {
+                    game.joinPlayer(data.player);
+                    game.readyPlayer(data.player);
+                }
             } else if (action == "answer") {
                 game.checkAnswer(data.player, data.answer, ws);
             } else if (action == "start") {

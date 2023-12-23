@@ -478,6 +478,18 @@
             -o-animation: bubble 12s linear infinite, sideWays 7s ease-in-out infinite alternate;
         }
 
+        .floating-emoji:nth-of-type(9) {
+            -webkit-animation: bubble 29s linear infinite, sideWays 18s ease-in-out infinite alternate;
+            -moz-animation: bubble 29s linear infinite, sideWays 18s ease-in-out infinite alternate;
+            -o-animation: bubble 29s linear infinite, sideWays 18s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(10) {
+            -webkit-animation: bubble 14s linear infinite, sideWays 3s ease-in-out infinite alternate;
+            -moz-animation: bubble 14s linear infinite, sideWays 3s ease-in-out infinite alternate;
+            -o-animation: bubble 14s linear infinite, sideWays 3s ease-in-out infinite alternate;
+        }
+
         @-webkit-keyframes bubble {
             0% {
                 top: calc(100vh + 50px);
@@ -845,14 +857,16 @@
 
 
         <div class="floating-emoji-container">
-            <div style="left:5px" class="floating-emoji">{{getEmoji(1)}}</div>
-            <div style="left:55px" class="floating-emoji">{{getEmoji(2)}}</div>
-            <div style="left:110px" class="floating-emoji">{{getEmoji(3)}}</div>
-            <div style="left:160px" class="floating-emoji">{{getEmoji(4)}}</div>
-            <div style="left:210px" class="floating-emoji">{{getEmoji(5)}}</div>
-            <div style="left:260px" class="floating-emoji">{{getEmoji(6)}}</div>
-            <div style="left:310px" class="floating-emoji">{{getEmoji(7)}}</div>
-            <div style="left:360px" class="floating-emoji">{{getEmoji(8)}}</div>
+            <div style="left:4%" class="floating-emoji">{{getEmoji(1)}}</div>
+            <div style="left:13%" class="floating-emoji">{{getEmoji(2)}}</div>
+            <div style="left:22%" class="floating-emoji">{{getEmoji(3)}}</div>
+            <div style="left:31%" class="floating-emoji">{{getEmoji(4)}}</div>
+            <div style="left:40%" class="floating-emoji">{{getEmoji(5)}}</div>
+            <div style="left:49%" class="floating-emoji">{{getEmoji(6)}}</div>
+            <div style="left:58%" class="floating-emoji">{{getEmoji(7)}}</div>
+            <div style="left:67%" class="floating-emoji">{{getEmoji(8)}}</div>
+            <div style="left:76%" class="floating-emoji">{{getEmoji(9)}}</div>
+            <div style="left:85%" class="floating-emoji">{{getEmoji(10)}}</div>
         </div>
 
 
@@ -934,7 +948,7 @@
                         timer: 0,
                         timerMax: 0,
                         pirate: false,
-                        emojis: ["💘", "🎅", "🧠", "🍕", "⌚", "🔮", "🦓", "💯"],
+                        emojis: ["💘", "🎅", "🧠", "🍕", "⌚", "🔮", "🦓", "💯","🎈","🚀"],
                         piratemoji: ["🏴‍☠", "🦜", "⛵", "☠️", "🏴", "⚓", "🌊", "🗡️", "🧭", "🧜🏼‍♀️"]
                     }
                 },
@@ -970,7 +984,7 @@
                 methods: {
                     connect: function () {
                         let that = this;
-                        this.connection = new WebSocket('ws://192.168.86.25:1337');
+                        this.connection = new WebSocket('ws://@@HOST:@@PORT');
                         window.connection = this.connection;
 
                         this.connection.onmessage = function (message) {
@@ -1020,7 +1034,7 @@
 
                         this.connection.onclose = function (event) {
                             if (that.player) {
-                                that.unJoinPlayer(that.player);
+                                that.leavePlayer(that.player);
                             }
 
                             setTimeout(function () {
