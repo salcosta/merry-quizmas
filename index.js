@@ -80,7 +80,6 @@ const game = {
     },
     playersReady: function () {
         let joinedPlayers = this.players.filter((element) => element.joined == true);
-        console.log(joinedPlayers);
         return joinedPlayers.every((element) => element.ready == true) && joinedPlayers.length >= MIN_PLAYERS;
     },
     checkAnswer: function (playerName, answer, ws) {
@@ -284,8 +283,6 @@ const game = {
             } else if (this.phase == ROUND_INTERSTITIAL) {
                 if (this.playersReady()) {
                     this.setPhase(ROUND_END, 10);
-                } else {
-                    console.log("Stuck here")
                 }
             } else if (this.phase == ROUND_END) {
                 if (this.roundNumber == 4) {
@@ -336,7 +333,6 @@ wss.on('connection', function (ws) {
         if (typeof data === "object") {
             var action = data.action;
             if (action == "joinPlayer") {
-                console.log("Player joining")
                 if (data.player != null) {
                     game.joinPlayer(data.player);
                     if (game.phase != GAME_WAITING) {
