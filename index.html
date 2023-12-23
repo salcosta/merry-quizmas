@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Quizmas</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        html {
+            overflow: hidden;
+            width: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .shape {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        body {
+            position: fixed;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+            font-family: 'IBM Plex Mono', monospace;
+            color: white;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .centered {
+            margin: 0 auto;
+        }
+
+        .title {
+            margin-top: 130px;
+            margin-bottom: 30px;
+            font-size: 3em;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 3px 2px 1px rgb(137, 0, 0);
+        }
+
+        .player-select {
+            font-weight: bold;
+            text-align: center;
+
+        }
+
+        .player {
+            height: 6vh;
+            width: 240px;
+            color: black;
+            border: 3px solid black;
+            box-shadow: 0px 8px 1px rgba(0, 0, 0, 1);
+            display: inline-block;
+            border-radius: 25px;
+            margin-right: 10px;
+            margin-bottom: 2.4vh;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .player.confirming {
+            height: 6.5vh;
+            width: 260px;
+
+        }
+
+        .centered-text {
+            color: black;
+            text-align: center;
+        }
+
+        .player:nth-of-type(1) {
+            background-color: #807dfa;
+            /* background: linear-gradient(to top, rgb(233, 100, 67), rgb(144, 78, 149)); */
+        }
+
+        .player:nth-of-type(2) {
+            background-color: #fa7fee;
+            /* background: linear-gradient(to top, rgb(255, 95, 109), rgb(255, 195, 113)); */
+        }
+
+        .player:nth-of-type(3) {
+            background-color: #53f2fc;
+            /* background: linear-gradient(to top, rgb(168, 0, 119), rgb(102, 255, 0)); */
+        }
+
+        .player:nth-of-type(4) {
+            background-color: #f76363;
+            /* background: linear-gradient(to top, rgb(0, 0, 0), rgb(67, 67, 67)); */
+        }
+
+        .player:nth-of-type(5) {
+            background-color: #fa8543;
+            /* background: linear-gradient(to top, rgb(90, 63, 55), rgb(44, 119, 68)); */
+        }
+
+        .player:nth-of-type(6) {
+            background-color: #FFE500;
+            /* background: linear-gradient(to top, rgb(254, 172, 94), rgb(199, 121, 208), rgb(75, 192, 200)); */
+        }
+
+        .player:nth-of-type(7) {
+            background-color: #7df752;
+            /* background: linear-gradient(to top, rgb(255, 78, 80), rgb(249, 212, 35)); */
+        }
+
+        .player.disabled {
+            opacity: 0.2;
+        }
+
+        .option {
+            font-family: 'IBM Plex Mono', monospace;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+            width: 90vw;
+            min-height: 50px;
+            font-size: 4.5vw;
+            margin: 0em;
+            padding-block: 1px;
+            padding-inline: 6px;
+            margin-bottom: 20px;
+        }
+
+        .option:nth-of-type(1) {
+            box-shadow: 2px 4px 1px #571530;
+            background: #F03986;
+            border: 4px solid #571530;
+            border-radius: 10px;
+            color: #3D0F22;
+        }
+
+        .option:nth-of-type(2) {
+            box-shadow: 2px 4px 1px #15451F;
+            background: #43DD65;
+            border: 4px solid #15451F;
+            border-radius: 10px;
+            color: #0D2B14;
+        }
+
+        .option:nth-of-type(3) {
+            box-shadow: 2px 4px 1px #594A16;
+            background: #F2CA3C;
+            border: 4px solid #594A16;
+            border-radius: 10px;
+            color: #403510;
+        }
+
+        .option:nth-of-type(4) {
+            box-shadow: 2px 4px 1px #163959;
+            background: #3C9BF2;
+            border: 4px solid #163959;
+            border-radius: 10px;
+            color: #102940;
+        }
+
+        .option.locked {
+            box-shadow: 2px 4px 1px #414141;
+            background: #d9d9d9;
+            border: 4px solid #383838;
+            border-radius: 10px;
+            color: #1f1f1f;
+        }
+
+        .player-avatar {
+            vertical-align: calc(50%);
+            display: inline-block;
+            width: 4.5vh;
+            height: 4.5vh;
+            border-radius: 50px;
+            margin: 4px;
+            font-weight: bold;
+            background-color: whitesmoke;
+            transition: all 0.2s ease-in-out;
+        }
+
+
+        .leaderboard .player-avatar {
+            width: 0px;
+            margin-right: 40px;
+        }
+
+        .leaderboard .highscore:nth-of-type(1) .player-avatar img {
+            box-shadow: 2px 2px 1px 1px goldenrod;
+        }
+
+        .leaderboard .highscore:nth-of-type(2) .player-avatar img {
+            box-shadow: 2px 2px 1px 1px silver;
+        }
+
+        .leaderboard .highscore:nth-of-type(3) .player-avatar img {
+            box-shadow: 2px 2px 1px 1px #CD7F32;
+        }
+
+        .player.confirming .player-avatar {
+            margin: 8px;
+        }
+
+        .player-avatar img {
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .footer {
+            color: black;
+        }
+
+        .player-footer {
+            display: inline-block;
+            border-radius: 25px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .score-footer {
+            float: right;
+            width: 100px;
+            height: 50px;
+            line-height: 56px;
+            border-radius: 25px;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+
+        .player-footer-name {
+            line-height: 56px;
+            margin-left: 5px;
+            margin-right: 15px;
+        }
+
+        .player-footer-avatar {
+            overflow: hidden;
+            display: inline-block;
+            float: left;
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            margin: 5px;
+            background-color: whitesmoke;
+        }
+
+        .player-footer-avatar img {
+            height: 100%;
+            width: 100%;
+        }
+
+        .player-name {
+            top: -28px;
+            position: relative;
+            line-height: 56px;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .player-points {
+            float: right;
+            top: -8px;
+            position: relative;
+            line-height: 56px;
+            margin-left: 75px;
+            margin-right: 15px;
+        }
+
+        #app {
+            display: inline-block;
+            height: 100vh;
+            width: 100%;
+            background-color: #FFD600;
+            z-index: 1;
+            transition: all 1s ease-in-out;
+        }
+
+
+
+        .app-wrapper {
+            position: relative;
+            z-index: 10;
+            margin: 0 auto;
+            width: 90%;
+            height: 100%;
+        }
+
+        .app-container {
+            display: inline-block;
+            height: 100vh;
+            width: 100%;
+            background-color: #FFD600;
+            transition: all 1s ease-in-out;
+        }
+
+        .app-container.light {
+            background-color: #FFF9E4;
+            padding-top: 30px;
+        }
+
+        .pirate {
+            color: whitesmoke !important;
+        }
+
+        .app-container.pirate {
+            background-color: black;
+            color: whitesmoke !important;
+        }
+
+        .app-container.pirate h1,
+        .app-container.pirate h2,
+        .app-container.pirate h3,
+        .app-container.pirate h4,
+        .app-container.pirate h5,
+        .app-container.pirate p {
+            color: whitesmoke;
+        }
+
+        .selected {
+            font-weight: bold;
+        }
+
+        h1 {
+            margin-top: 40px;
+            font-size: 4.5em;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+            text-shadow: 3px 2px 1px rgb(137, 0, 0);
+        }
+
+        h3 {
+            margin-top: 40px;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+            text-shadow: 3px 2px 1px rgb(137, 0, 0);
+        }
+
+        h5 {
+            margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+            text-shadow: 2px 1px 1px rgb(137, 0, 0);
+        }
+
+        h5.question {
+            margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+            text-shadow: 1px 1px 1px rgb(137, 0, 0);
+        }
+
+        .btn {
+            color: black;
+            font-size: 2em;
+            border: 3px solid black;
+            box-shadow: 0px 8px 1px rgba(0, 0, 0, 1);
+            display: inline-block;
+            border-radius: 25px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            min-width: 100px;
+            padding: 10px 20px 10px 20px;
+        }
+
+        .ready {
+            margin: 0 auto;
+        }
+
+        .instructions {
+            color: black;
+        }
+
+        .instructions p {
+            margin-left: 5px;
+        }
+
+        .ready button {
+            display: block;
+            margin: 0 auto;
+            box-shadow: 2px 4px 1px #571530;
+            background: #F03986;
+            border: 4px solid #571530;
+            border-radius: 10px;
+            color: #3D0F22;
+        }
+
+        .ready button:active {
+            background: #e65692;
+
+        }
+
+        .floating-emoji-container {
+            top: 0;
+            height: 100vh;
+            position: absolute;
+            width: 100vw;
+            z-index: 0;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 50px;
+            bottom: -50px;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        .floating-emoji:nth-of-type(1) {
+            -webkit-animation: bubble 20s linear infinite, sideWays 4s ease-in-out infinite alternate;
+            -moz-animation: bubble 20s linear infinite, sideWays 4s ease-in-out infinite alternate;
+            -o-animation: bubble 20s linear infinite, sideWays 4s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(2) {
+            -webkit-animation: bubble 15s linear infinite, sideWays 8s ease-in-out infinite alternate;
+            -moz-animation: bubble 15s linear infinite, sideWays 8s ease-in-out infinite alternate;
+            -o-animation: bubble 15s linear infinite, sideWays 8s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(3) {
+            -webkit-animation: bubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;
+            -moz-animation: bubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;
+            -o-animation: bubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(4) {
+            -webkit-animation: bubble 14s linear infinite, sideWays 6s ease-in-out infinite alternate;
+            -moz-animation: bubble 14s linear infinite, sideWays 6s ease-in-out infinite alternate;
+            -o-animation: bubble 14s linear infinite, sideWays 6s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(5) {
+            -webkit-animation: bubble 24s linear infinite, sideWays 5s ease-in-out infinite alternate;
+            -moz-animation: bubble 24s linear infinite, sideWays 5s ease-in-out infinite alternate;
+            -o-animation: bubble 24s linear infinite, sideWays 5s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(6) {
+            -webkit-animation: bubble 19s linear infinite, sideWays 9s ease-in-out infinite alternate;
+            -moz-animation: bubble 19s linear infinite, sideWays 9s ease-in-out infinite alternate;
+            -o-animation: bubble 19s linear infinite, sideWays 9s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(7) {
+            -webkit-animation: bubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;
+            -moz-animation: bubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;
+            -o-animation: bubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;
+        }
+
+        .floating-emoji:nth-of-type(8) {
+            -webkit-animation: bubble 12s linear infinite, sideWays 7s ease-in-out infinite alternate;
+            -moz-animation: bubble 12s linear infinite, sideWays 7s ease-in-out infinite alternate;
+            -o-animation: bubble 12s linear infinite, sideWays 7s ease-in-out infinite alternate;
+        }
+
+        @-webkit-keyframes bubble {
+            0% {
+                top: calc(100vh + 50px);
+            }
+
+            100% {
+                top: -75px;
+            }
+        }
+
+        @-webkit-keyframes sideWays {
+            0% {
+                margin-left: 0px;
+            }
+
+            100% {
+                margin-left: 50px;
+            }
+        }
+
+        .footer {
+            font-weight: bold;
+            color: black;
+            position: absolute;
+            bottom: 25px;
+            padding: 10px;
+            left: 0px;
+            width: 100vw;
+            height: 50px;
+        }
+
+        .header {
+            font-weight: bold;
+            color: black;
+            position: absolute;
+            top: 7px;
+            padding: 10px;
+            left: 0px;
+            width: 100vw;
+            height: 50px;
+        }
+
+        .header .header-round {
+            float: left;
+        }
+
+        .header .header-question {
+            float: right;
+        }
+
+        .spacer {
+            margin-bottom: 10vh;
+        }
+
+        .small-spacer {
+            margin-bottom: 10vh;
+        }
+
+        .tiny-spacer {
+            margin-bottom: 5vh;
+        }
+
+        .embiggened {
+            font-size: 6em;
+        }
+
+        .leaderboard {
+            color: black;
+        }
+
+        .highscore {
+            font-weight: bold;
+            margin: 0 auto;
+            display: block;
+            width: 300px;
+        }
+
+        /* common */
+        .ribbon {
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            position: absolute;
+        }
+
+        .ribbon span {
+            font-size: 0.8em;
+            position: absolute;
+            display: block;
+            width: 225px;
+            padding: 15px 0;
+            background-color: #9a1717;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+            color: #fff;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* top left*/
+        .ribbon-top-left {
+            top: -13px;
+            left: -32px;
+        }
+
+        .ribbon-top-left::before,
+        .ribbon-top-left::after {
+            border-top-color: transparent;
+            border-left-color: transparent;
+        }
+
+        .ribbon-top-left::before {
+            top: 0;
+            right: 0;
+        }
+
+        .ribbon-top-left::after {
+            bottom: 0;
+            left: 0;
+        }
+
+        .ribbon-top-left span {
+            right: -25px;
+            top: 30px;
+            transform: rotate(-45deg);
+        }
+
+        .title-footer {
+            position: absolute;
+            bottom: 5px;
+            width: 90%;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .timer-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .timer {
+            height: 7px;
+            background: #102940;
+        }
+
+        .correct-answer {
+            text-align: center;
+            color: black;
+            font-weight: bold;
+            padding-left: 5px;
+        }
+
+        span.option:not(.selected) {
+            box-shadow: 2px 4px 1px #414141;
+            background: #d9d9d9;
+            border: 4px solid #383838;
+            border-radius: 10px;
+            color: #1f1f1f;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="app-container" :class="{'light': isQuestionPhase(), 'pirate': pirate}" @click="clearWhatever()">
+            <div class="ribbon ribbon-top-left" v-if="phase=='GAME_WAITING'"><span>🎄 Edition</span></div>
+            <div class="app-wrapper">
+                <div v-if="phase=='GAME_WAITING'">
+                    <div class="small-spacer"></div>
+                    <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Merry Quizmas</h1>
+                        <div class="centered" style="margin-top:-25px">
+                            <p v-if="!this.player" class="centered-text">Click 💥 on your name to continue.</p>
+                            <p v-if="this.player" class="centered-text">Click 💥 your name again to confirm.</p>
+                        </div>
+                        <div class="player-select">
+                            <span v-for="user in selectableUsers" class="player" :class="confirmingPlayer(user)"
+                                @click.stop="selectPlayer(user)">
+                                <span class="player-avatar"><img :src="getAvatar(user)" /></span>
+                                <span class="player-name">@{{user}}</span>
+                            </span>
+                        </div>
+
+                        <div class="centered-text title-footer">🎅 XMAS 2023</div>
+                </div>
+
+                <div v-if="phase=='PLAYERS_JOINING'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Waiting 😔 for
+                            other
+                            players 📱 to join...</h3>
+                        <h1 class="embiggened animate__animated animate__bounce animate__infinite">⏳</h1>
+                    </div>
+
+                </div>
+
+                <div v-if="phase=='GAME_INSTRUCTIONS'">
+                    <div class="tiny-spacer"></div>
+                    <div class="instructions centered">
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Instructions
+                        </h3>
+                        <p>This year 📅 I will give the greatest gift 🎁 of all. The gift of knowing 💭 who is the
+                            second
+                            smartest 🧠 among us.</p>
+                        <p>There will be 3 rounds of questions ❓ on various topics. Each round will continue until there
+                            are 10 correct ✅ answers. Whoever answers the most will win 🏅 bragging rights for a whole
+                            year.</p>
+                        <p>In order to prevent Adam from 💪 dominating, players with higher scores will have a slight
+                            disadvantage in the form of a lockout timer ⏰. The higher the score the longer the timer. ⏳
+                        </p>
+                        <div class="ready">
+                            <button class="btn" v-if="ready" @click="readyPlayer()">Ready</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="phase=='GAME_START'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Let's get
+                            started!</h3>
+                        <h1 class="embiggened animate__animated animate__bounce animate__infinite">🚦</h1>
+                    </div>
+                </div>
+
+                <div v-if="phase=='ROUND_START'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Get ready!!</h3>
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Round</h3>
+                        <h1 class="animate__animated animate__lightSpeedInLeft animate__slower">{{round}}</h1>
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">is starting!!
+                        </h3>
+                    </div>
+                </div>
+
+                <div v-if="phase=='QUESTION_READY'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Question
+                            ➡ incoming!</h3>
+                        <h1 class="embiggened animate__animated animate__bounce animate__infinite">❓</h1>
+                    </div>
+                </div>
+                <div v-if="phase=='QUESTION_START'">
+                    <h5 class="question">{{question.question}}</h5>
+                    <div v-if="!selected">
+                        <button class="option" :class="{ locked: lockout > 0}"
+                            @click="sendAnswer(question.a)">{{scramble(question.a)}}</button>
+                        <button class="option" :class="{ locked: lockout > 0}"
+                            @click="sendAnswer(question.b)">{{scramble(question.b)}}</button>
+                        <button class="option" :class="{ locked: lockout > 0}"
+                            @click="sendAnswer(question.c)">{{scramble(question.c)}}</button>
+                        <button class="option" :class="{ locked: lockout > 0}"
+                            @click="sendAnswer(question.d)">{{scramble(question.d)}}</button>
+                    </div>
+                    <div v-if="selected">
+                        <span class="option" :class="{ selected: selected==question.a}">{{question.a}}</span>
+                        <span class="option" :class="{ selected: selected==question.b}">{{question.b}}</span>
+                        <span class="option" :class="{ selected: selected==question.c}">{{question.c}}</span>
+                        <span class="option" :class="{ selected: selected==question.d}">{{question.d}}</span>
+                    </div>
+                </div>
+                <div v-if="phase=='QUESTION_ANSWERED'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h3 class="animate__animated animate__lightSpeedInLeft animate__slower">{{winner}}</h3>
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Got it right.
+                            👌👌
+                        </h3>
+                        <h5 class="animate__animated animate__pulse animate__infinite animate__slower">The correct
+                            answer was</h5>
+                        <p class="correct-answer">{{question.answer}}</p>
+                    </div>
+
+                </div>
+
+                <div v-if="phase=='QUESTION_MISSED'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h5 class="animate__animated animate__pulse animate__infinite animate__slower">Nobody ❌ got the
+                            right answer! 😤</h5>
+                        <h1 class="embiggened animate__animated animate__bounce animate__infinite">😂</h1>
+                        <h5 style="margin-top:20px"
+                            class="animate__animated animate__pulse animate__infinite animate__slower">The correct
+                            answer was</h5>
+                        <p class="correct-answer">{{question.answer}}</p>
+                    </div>
+                </div>
+
+                <div v-if="phase=='ROUND_END'">
+                    <div class="small-spacer"></div>
+                    <div class="centered">
+                        <h5 class="animate__animated animate__pulse animate__infinite animate__slower">Round 🔴 is over,
+                            lets check the 👥 leaderboard. </h5>
+                        <div class="leaderboard centered">
+                            <div class="highscore" v-for="player in getLeaders()">
+                                <span class="player-avatar"><img :src="getAvatar(player.name)" /></span>
+                                <span class="player-name">{{player.name}}</span>
+                                <span class="player-points">${{getScoreForPlayer(player.name)}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="phase=='ROUND_INTERSTITIAL'">
+                    <div class="tiny-spacer"></div>
+                    <div class="instructions centered">
+
+                        <h5 class="animate__animated animate__zoomIn">No. This is too boring..</h5>
+                        <h5 class="animate__animated animate__zoomIn animate__delay-2s">Let's make the points worth
+                            💵💸 actual money.</h5>
+                        <h1 class="embiggened animate__animated animate__zoomIn animate__delay-2s">💰</h1>
+                        <h5 class="animate__animated animate__zoomIn animate__delay-4s">I hope you signed up for Venmo.
+                        </h5>
+                        <div class="ready">
+                            <button class="btn" v-if="ready" @click="readyPlayer()">Ready</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div v-if="phase=='GAME_OVER'">
+                    <div class="spacer"></div>
+                    <div class="centered">
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">That's it folks!
+                            👋</h3>
+                        <h1 class="embiggened animate__animated animate__bounce">😂</h1>
+                        <h3 class="animate__animated animate__pulse animate__infinite animate__slower">Next year just
+                            send ➡💌 me your Amazon wishlist. 📝📝 </h3>
+                    </div>
+                </div>
+
+                <div v-if="!connection">
+                    Offline
+                </div>
+            </div>
+        </div>
+
+        <div class="timer-container">
+            <div class="timer" v-bind:style="{width: getPercent()}"></div>
+        </div>
+        <div class="header" :class="{ pirate: pirate}" v-if="isQuestionPhase()">
+            <span class="header-round">
+                Round {{round}}/3
+            </span>
+
+            <span class="header-question">
+                Questions Left {{questionsLeft}}
+            </span>
+        </div>
+
+        <div class="footer" :class="{ pirate: pirate}" v-if="isQuestionPhase()">
+            <span class="player-footer">
+                <span class="player-footer-avatar"><img :src="getAvatar()" /></span>
+                <span class="player-footer-name">@{{player}}</span>
+            </span>
+            <span class="score-footer">
+                {{getScore()}}
+            </span>
+        </div>
+
+
+        <div class="floating-emoji-container">
+            <div style="left:5px" class="floating-emoji">{{getEmoji(1)}}</div>
+            <div style="left:55px" class="floating-emoji">{{getEmoji(2)}}</div>
+            <div style="left:110px" class="floating-emoji">{{getEmoji(3)}}</div>
+            <div style="left:160px" class="floating-emoji">{{getEmoji(4)}}</div>
+            <div style="left:210px" class="floating-emoji">{{getEmoji(5)}}</div>
+            <div style="left:260px" class="floating-emoji">{{getEmoji(6)}}</div>
+            <div style="left:310px" class="floating-emoji">{{getEmoji(7)}}</div>
+            <div style="left:360px" class="floating-emoji">{{getEmoji(8)}}</div>
+        </div>
+
+
+
+        <script type="module">
+            import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+            const GAME_WAITING = "GAME_WAITING";
+            const PLAYERS_JOINING = "PLAYERS_JOINING";
+            const GAME_INSTRUCTIONS = "GAME_INSTRUCTIONS";
+            const GAME_START = "GAME_START";
+            const ROUND_START = "ROUND_START";
+            const QUESTION_READY = "QUESTION_READY";
+            const QUESTION_START = "QUESTION_START";
+            const QUESTION_ANSWERED = "QUESTION_ANSWERED";
+            const QUESTION_MISSED = "QUESTION_MISSED";
+            const ROUND_INTERSTITIAL = "ROUND_INTERSTITIAL";
+            const ROUND_END = "ROUND_END";
+            const GAME_OVER = "GAME_OVER";
+            const audio = new Audio('/pirates-mp3cut.mp3');
+
+            let app = createApp({
+                data() {
+                    return {
+                        connection: null,
+                        phase: GAME_WAITING,
+                        player: null,
+                        selectableUsers: ["Adam", "Annabelle", "Carly", "Jenn", "Rhemi", "Roberto", "Veronica"],
+                        players: [{
+                            "name": "Adam",
+                            "joined": false,
+                            "ready": false,
+                            "guessed": false,
+                            "round": [
+                                2,
+                                0,
+                                0
+                            ]
+                        },
+                        {
+                            "name": "Veronica",
+                            "joined": false,
+                            "ready": false,
+                            "guessed": false,
+                            "round": [
+                                2,
+                                0,
+                                0
+                            ]
+                        },
+                        {
+                            "name": "Roberto",
+                            "joined": false,
+                            "ready": false,
+                            "guessed": false,
+                            "round": [
+                                4,
+                                0,
+                                0
+                            ]
+                        }],
+                        winner: "Player 1",
+                        selectedPlayer: null,
+                        confirmingPlayerMode: false,
+                        question: {
+                            "topic": "world",
+                            "question": "The Latin motto of the US state of Kansas is Ad astra per aspera. What does this mean in English?",
+                            "answer": "To the stars through difficulties",
+                            "a": "To the stars through difficulties",
+                            "b": "We reach for the stars.",
+                            "c": "To the stars as we dream",
+                            "d": "The stars await us."
+                        },
+                        selected: false,
+                        ready: true,
+                        round: 1,
+                        questionsLeft: 10,
+                        lockout: 0,
+                        timer: 0,
+                        timerMax: 0,
+                        pirate: false,
+                        emojis: ["💘", "🎅", "🧠", "🍕", "⌚", "🔮", "🦓", "💯"],
+                        piratemoji: ["🏴‍☠", "🦜", "⛵", "☠️", "🏴", "⚓", "🌊", "🗡️", "🧭", "🧜🏼‍♀️"]
+                    }
+                },
+
+                created: function () {
+                    var that = this;
+
+                    let tempPlayer = localStorage.getItem("player");
+
+                    if (tempPlayer) {
+                        this.player = tempPlayer;
+                    }
+
+                    this.connect();
+
+                    window.onbeforeunload = function () {
+                        if (that.player) {
+                            that.leavePlayer();
+                        }
+                    }
+
+
+                    setInterval(function () {
+                        if (that.connection.readyState == 3) {
+                            that.connect();
+                            that.joinAsPlayer(that.player);
+                            that.readyPlayer();
+                        }
+                    }, 1000);
+
+
+                },
+                methods: {
+                    connect: function () {
+                        let that = this;
+                        this.connection = new WebSocket('ws://192.168.86.25:1337');
+                        window.connection = this.connection;
+
+                        this.connection.onmessage = function (message) {
+                            var data = message.data.toString();
+
+                            try {
+                                data = JSON.parse(data);
+                            } catch (ex) {
+                                // Not JSON
+                            }
+
+                            if (typeof data === "object") {
+                                var action = data.action;
+
+                                if (action == "setPhase") {
+                                    that.phase = data.params.phase;
+                                    that.round = data.params.game.roundNumber;
+                                    that.questionsLeft = data.params.game.questionsLeft;
+                                    that.players = data.params.game.players;
+                                    that.ready = data.params.game.ready;
+                                    that.question = data.params.game.question;
+                                    that.winner = data.params.game.lastAnswer;
+                                    that.timer = data.params.game.timer * 1000;
+                                    that.timerMax = data.params.game.timer * 1000;
+
+                                    if (data.params.phase == QUESTION_START || data.params.phase == ROUND_END || data.params.phase == ROUND_INTERSTITIAL) {
+                                        that.pirate = false;
+                                    }
+
+                                    if (that.winner == "Veronica" && that.phase == QUESTION_ANSWERED) {
+                                        that.pirate = true;
+                                        audio.play();
+                                    }
+
+                                    if (data.params.phase == QUESTION_START) {
+                                        that.selected = false;
+                                        that.lockout = that.getLockout();
+                                    }
+
+                                } else if (action == "ping") {
+                                    that.readyPlayer(that.player);
+                                }
+                            } else {
+                                console.log(data);
+                            }
+                        }
+
+                        this.connection.onclose = function (event) {
+                            if (that.player) {
+                                that.unJoinPlayer(that.player);
+                            }
+
+                            setTimeout(function () {
+                                that.connect();
+
+                            }, 1000)
+
+                        };
+
+                        this.connection.onopen = function (event) {
+
+                            if (!that.player) {
+                                that.joinAsPlayer(that.player);
+                            }
+                            console.log("Successfully connected to the echo websocket server...")
+                        }
+
+                        this.connection.onerror = function (err) {
+                            this.connection.close();
+                        }
+                    },
+                    processGameTick: function () {
+                        this.lockout = Math.max(0, this.lockout - 100);
+                        this.timer = Math.max(0, this.timer - 100);
+                    },
+                    sendMessage: function (message) {
+                        if (typeof message !== "string") {
+                            message = JSON.stringify(message);
+                        }
+                        this.connection.send(message);
+                    },
+                    joinAsPlayer: function (player) {
+                        if (player == null) {
+                            return false;
+                        }
+
+                        this.sendMessage({ "action": "joinPlayer", "player": player })
+                    },
+                    leavePlayer: function (player) {
+                        this.sendMessage({ "action": "leavePlayer", "player": this.player })
+                    },
+                    readyPlayer: function () {
+                        this.ready = false;
+                        this.sendMessage({ "action": "reportReady", "player": this.player })
+
+                        if (this.phase == GAME_INSTRUCTIONS) {
+                            this.phase = PLAYERS_JOINING;
+                        }
+                    },
+                    sendStart: function () {
+                        this.sendMessage({ "action": "start" })
+                    },
+                    sendAnswer: function (answer) {
+                        if (this.lockout > 0) return false;
+                        this.selected = answer;
+                        this.sendMessage({ "action": "answer", "player": this.player, "answer": answer });
+                    },
+                    isQuestionPhase: function () {
+                        return this.phase.indexOf("QUESTION") != -1;
+                    },
+                    clearPlayer: function () {
+                        localStorage.removeItem("player");
+                        this.player = "None";
+                    },
+                    selectPlayer: function (playerName) {
+                        if (this.player == playerName) {
+                            localStorage.setItem("player", playerName);
+                            this.player = playerName;
+                            this.joinAsPlayer(playerName);
+                            this.phase = PLAYERS_JOINING;
+                        } else {
+                            this.player = playerName;
+                        }
+                    },
+                    confirmingPlayer: function (playerName) {
+                        if (playerName == this.player) {
+                            return "confirming"
+                        } else if (this.player != null) {
+                            return "disabled"
+                        }
+                    },
+                    clearWhatever: function () {
+                        if (this.phase == GAME_WAITING) {
+                            this.player = null;
+                        }
+                    },
+
+                    getScore: function () {
+                        let that = this;
+                        let indicator = "points";
+                        let points = 0;
+
+                        try {
+                            let player = that.players.find((element) => element.name == that.player);
+                            let rounds = player.round;
+                            let score = rounds[0] * 10 + rounds[1] * 15 + rounds[2] * 20;
+                            points = score;
+                        } catch (ex) {
+                            points = 0;
+                        }
+
+                        if (this.round == 1) {
+                            return points + " points";
+                        } else {
+                            return "$" + points;
+                        }
+
+                    },
+
+                    getScoreForPlayer: function (playerName) {
+                        let that = this;
+                        try {
+                            let player = that.players.find((element) => element.name == playerName);
+                            let rounds = player.round;
+                            let score = rounds[0] * 10 + rounds[1] * 15 + rounds[2] * 20;
+
+                            return score;
+
+                        } catch (ex) {
+                            return 0;
+                        }
+                    },
+
+                    getLockout: function () {
+                        let that = this;
+                        try {
+                            let player = that.players.find((element) => element.name == that.player);
+                            let rounds = player.round;
+                            let lockout = rounds[that.round - 1] * 1500;
+
+                            return lockout;
+
+                        } catch (ex) {
+                            return 0;
+                        }
+
+                    },
+
+                    scramble: function (message) {
+                        if (this.lockout > 0) {
+                            return "🔒 ?????????";
+
+                        } else {
+                            return message;
+                        }
+                    },
+
+                    getPercent: function () {
+                        if (this.timer == 0) {
+                            return "0%";
+                        }
+                        let percent = (this.timer / this.timerMax) * 100;
+
+                        return percent + "%";
+                    },
+                    getEmoji: function (index) {
+                        if (this.pirate) {
+                            return this.piratemoji[index - 1];
+                        } else {
+                            return this.emojis[index - 1];
+                        }
+                    },
+                    getAvatar: function (player) {
+                        if (!player) {
+                            player = this.player;
+                        }
+
+                        if (player == "Adam") {
+                            return "adam.jpg";
+                        } else if (player == "Annabelle") {
+                            return "ab.jpg";
+                        } else if (player == "Carly") {
+                            return "carly.jpg";
+                        } else if (player == "Jenn") {
+                            return "jenn.jpg";
+                        } else if (player == "Rhemi") {
+                            return "rhemi.jpg";
+                        } else if (player == "Roberto") {
+                            return "roberto.jpg";
+                        } else if (player == "Veronica") {
+                            return "veronica.jpg";
+                        }
+                    },
+
+                    getLeaders: function () {
+                        return this.players.sort((a, b) => {
+                            let aScore = a.round[0] + a.round[1] + a.round[2];
+                            let bScore = b.round[0] + b.round[1] + b.round[2];
+
+                            if (aScore > bScore) {
+                                return -1
+                            }
+
+                            if (aScore < bScore) {
+                                return 1
+                            }
+
+                            return 0;
+                        });
+                    }
+                },
+
+            }).mount('#app')
+
+            setInterval(function () {
+                app.processGameTick();
+            }, 100);
+        </script>
+</body>
+
+</html>
